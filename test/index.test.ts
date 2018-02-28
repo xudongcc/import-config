@@ -18,7 +18,7 @@ const expectConfig: any = {
 
 describe("导入配置", () => {
     it("导入配置应该要和预期一样", () => {
-        const config = importConfig(join(process.cwd(), "./config"));
+        const config = importConfig(join(process.cwd(), "/test/config"));
         expect(config).toEqual(expectConfig);
     });
 
@@ -27,12 +27,12 @@ describe("导入配置", () => {
         expectConfig2.app.name = "website2";
         expectConfig2.datebase.port = 3306;
 
-        const config = importConfig(join(process.cwd(), "./config"), join(process.cwd(), "./config2"));
+        const config = importConfig(join(process.cwd(), "/test/config"), join(process.cwd(), "/test/config2"));
         expect(config).toEqual(expectConfig);
     });
 
     it("传入一个不存在的路径应该没有返回值", () => {
-        const config = importConfig(join(process.cwd(), "./undefined"));
+        const config = importConfig(join(process.cwd(), "/test/undefined"));
         expect(config).toBeUndefined();
     });
 });
