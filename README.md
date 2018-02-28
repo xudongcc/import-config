@@ -1,5 +1,11 @@
 # import-config
 
+[![Travis](https://img.shields.io/travis/xudongcc/import-config.svg)](https://travis-ci.org/xudongcc/import-config)
+[![Codecov](https://img.shields.io/codecov/c/github/xudongcc/import-config.svg)](https://codecov.io/gh/xudongcc/import-config)
+[![Version](https://img.shields.io/npm/v/import-config.svg)](https://www.npmjs.com/package/import-config)
+[![License](https://img.shields.io/npm/l/import-config.svg)](https://www.npmjs.com/package/import-config)
+[![Download](https://img.shields.io/npm/dt/import-config.svg)](https://www.npmjs.com/package/import-config)
+
 这是一个 Node.js 配置文件加载器。
 
 支持递归加载文件夹配置文件。
