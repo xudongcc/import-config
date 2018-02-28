@@ -1,9 +1,9 @@
 import * as fs from "fs-extra";
 import * as yaml from "js-yaml";
-import { isArray } from "lodash";
+import { merge } from "lodash";
 import { basename, extname, join } from "path";
 
-function importJson(path: string): any {
+export function importJson(path: string): any {
     try {
         return JSON.parse(fs.readFileSync(path, "utf8"));
     } catch (err) {
@@ -11,7 +11,7 @@ function importJson(path: string): any {
     }
 }
 
-function importYaml(path: string): any {
+export function importYaml(path: string): any {
     try {
         return yaml.safeLoad(fs.readFileSync(path, "utf8"));
     } catch (err) {
@@ -19,34 +19,37 @@ function importYaml(path: string): any {
     }
 }
 
-export function importConfig(path: string | string[]): any {
-    if (isArray(path)) {
-        const result: any = {};
-        for (const p of path) {
-            const config = importConfig(p);
-            if (config) { result[basename(p, extname(p))] = config; }
-        }
-
-        return Object.keys(result).length > 0 ? result : undefined;
+export function importConfig(...paths: string[]): any {
+    if (paths.length > 1) {
+        return merge({}, ...paths.map((path) => importConfig(path)));
     }
 
     let stats: fs.Stats;
     try {
-        stats = fs.statSync(path);
+        stats = fs.statSync(paths[0]);
     } catch (err) {
         return;
     }
 
     if (stats.isDirectory()) {
-        return importConfig((fs.readdirSync(path)).map((p: string) => join(path, p)));
-    }
+        const result: any = {};
+        fs.readdirSync(paths[0]).forEach((name: string) => {
+            const path = join(paths[0], name);
+            const config = importConfig(path);
+            if (config) { result[basename(path, extname(path))] = config; }
+        });
 
-    if (stats.isFile()) {
-        switch (extname(path)) {
+        if (Object.keys(result).length > 0) {
+            return result;
+        }
+    } else {
+        switch (extname(paths[0])) {
             case ".json":
-                return importJson(path);
+                return importJson(paths[0]);
             case ".yaml":
-                return importYaml(path);
+                return importYaml(paths[0]);
         }
     }
+
+    return;
 }

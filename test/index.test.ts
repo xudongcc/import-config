@@ -1,7 +1,7 @@
 import { join } from "path";
 import { importConfig } from "../src";
 
-const expectConfig = {
+const expectConfig: any = {
     app: {
         locale: "zh-CN",
         name: "website",
@@ -12,7 +12,6 @@ const expectConfig = {
         host: "127.0.0.1",
         name: "test",
         pass: "root",
-        port: 3306,
         user: "root",
     },
 };
@@ -21,5 +20,19 @@ describe("导入配置", () => {
     it("导入配置应该要和预期一样", () => {
         const config = importConfig(join(process.cwd(), "./config"));
         expect(config).toEqual(expectConfig);
+    });
+
+    it("导入多个配置，后面的配置应该会覆盖前面的配置", () => {
+        const expectConfig2 = { ...expectConfig };
+        expectConfig2.app.name = "website2";
+        expectConfig2.datebase.port = 3306;
+
+        const config = importConfig(join(process.cwd(), "./config"), join(process.cwd(), "./config2"));
+        expect(config).toEqual(expectConfig);
+    });
+
+    it("传入一个不存在的路径应该没有返回值", () => {
+        const config = importConfig(join(process.cwd(), "./undefined"));
+        expect(config).toBeUndefined();
     });
 });
